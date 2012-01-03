@@ -3,7 +3,7 @@
  1 jan 2012  WHAT?
  
  TODO
- _____figure out branching with git
+ DONE_____figure out branching with git
  
  Here we go
  */
@@ -36,14 +36,14 @@ void draw () {
   PImage depthImage = kinect.depthImage();  // this makes the return type of the image-accessing function explicit
   PImage rgbImage = kinect.rgbImage();
   //storing the return type in a PImage serves to make explicit the return type of our two image-accessing functions.
-  
+
   /*PImage class provides all kinds of useful functionso for working with images such as the ability to access and alter individual pixels
    Having the Kinect data in the form of a PImage is an advantage because it means we can use the kinect data with other libraries
    that themselves don't know anything about the kinect, but do know how to process PImages. */
 
-  //image(kinect.depthImage(), 0, 0); // call this instance's depthImage, which asks the library for the most recent depthImage.
+  //image(kinect.depthImage(), 0, 0); // by calling kinect.depthImage inline within the arguments for image, we never see the return value
   image(depthImage, 0, 0);  // the kinect.depth is already called; its return type is stored in a PImage which is passed to this image function
-  //image(kinect.rgbImage(),640,0);
-  image(rgbImage, 640, 0);  // PImage rgbImage is passed to the image function
+  //image(kinect.rgbImage(),640,0); //by calling the kinect.rgbImage within the argument for image, we never see the return value from kinect.rgbImage
+  image(rgbImage, 640, 0);  // PImage rgbImage stores the return value from kinect.rgbImage and passes it to the image function.
 }
 
