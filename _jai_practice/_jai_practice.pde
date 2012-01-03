@@ -1,11 +1,15 @@
-/* jason stephens
+/* jason stephens  - 3 Jan 2012
  Making Things See - practice and examples
- 1 jan 2012  WHAT?
+ This Branch = LookingAtPixels
+
  
- TODO
+ TODO:
  DONE_____figure out branching with git
+ ____change the subtitle of this app here in comments with each branching
+       
  
- Here we go
+ 
+
  */
 
 import SimpleOpenNI.*;  //importing the SimpleOpenNI library, which is a wrapper for the OpenNI toolkit provided by PrimeSense
