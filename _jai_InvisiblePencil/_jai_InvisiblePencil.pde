@@ -51,6 +51,9 @@ void setup() {
   //initialize the kinect instance of the object SimpleOpenNI
   kinect = new SimpleOpenNI(this);
   kinect.enableDepth();
+  
+  //start with a black background
+  background(0);
 }
 
 void draw () {
