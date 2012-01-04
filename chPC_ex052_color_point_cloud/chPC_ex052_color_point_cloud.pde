@@ -13,7 +13,6 @@ void setup() {
   // tell OpenNI to line-up the color pixels
   // with the depth data
   kinect.alternativeViewPointDepthToImage();
-
 }
 
 void draw() {
@@ -21,19 +20,22 @@ void draw() {
   kinect.update();
   // load the color image from the Kinect
   PImage rgbImage = kinect.rgbImage();
-  
+
   translate(width/2, height/2, -250);
   rotateX(radians(180));
   translate(0, 0, 1000);
-  rotateY(radians(rotation));
-  rotation++;
+  //rotateY(radians(rotation));
+  rotateY(radians(mouseY));
+  //rotation++;
 
   PVector[] depthPoints = kinect.depthMapRealWorld();
   // don't skip any depth points
   for (int i = 0; i < depthPoints.length; i+=1) {
+    //original increment of for loop counter set to 1
     PVector currentPoint = depthPoints[i];
     // set the stroke color based on the color pixel
     stroke(rgbImage.pixels[i]);
     point(currentPoint.x, currentPoint.y, currentPoint.z);
   }
 }
+
