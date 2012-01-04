@@ -4,14 +4,9 @@
  
  
  TODO:
- DONE_____figure out branching with git :  I'm loving this github action!!
- DONE____change the subtitle of this app here in comments with each branching
- DONE____Get INFO for each pixel:  when mouse click on a pixel, print out information on that pixel
- DONE____Translate a brightness(); value to a real world distance.  where brightness is the distance between white and black. 0-255 mapped to 0-2047
- DONE____access an array of higher resolution values from the kinect.
- DONE____Use higher resolution depthImage values to turn Kinect into tape measure by converting high res depth values to accurate measurements.
- DONE____Translate between a 1-D array of pixels and the 2-D image that it represents
- DONE____Access an entry in an array that corresponds to any location in an image
+ ____track the point closest to the kinect
+ ____get depth array from the kinect
+ ____
  ____uh oh, usb extension cord issues with the Kinect....  email greg bornestein:  awaiting response
  
  NOTES:
@@ -78,32 +73,60 @@
 
 import SimpleOpenNI.*;  //importing the SimpleOpenNI library, which is a wrapper for the OpenNI toolkit provided by PrimeSense
 SimpleOpenNI kinect;  // declares the SimpleOpenNI object and names it "kinect."  this object is used to access of the Kinect's data
-// we use dot syntax to call functions on this object to get depth, color, skeleton etc.
-//I've declared it here, but don't instantiate it until setup function
+
+int closestValue; //holds high res depth value from depthMap associated with a pixels location in the depthImage
+int closestX;//holds x cordinate of pixel with closest depth value
+int closestY;//holds y cordinate of pixel with closest depth value
 
 void setup() {
   size (640, 480); // declare the size of our application.  width set to doube the width of both Depth and RGB
   kinect = new SimpleOpenNI(this); //instantiate the previously declared instance of the SimpleOpenNI object
 
   //TURN ON ACCESS DEPTH IMAGES FROM KINECT
-  /* call the enableDepth() methods on our 'kinect' instance of the SimpleOpenNI object
-   this method tells the library that we we are going to want access (in draw) to the kinect's depth.
-   Depending on the application, I may use 1 or neither of these.  By telling the library in advance, we give it extra time.  the library
-   only has to ask the Kinect for the data we actually use.  Setup allows the request to be staged without being used unless it's 
-   needed.  Everything runs smoother and faster this way.*/
   kinect.enableDepth(); // enableDepth() method using dot syntax to attach this function to the specific instance of the SimpleOpenNI object
-  // kinect.enableRGB(); // disable the enableRGB() method. strictly depthImage now.
 }
 void draw () {
+  closestValue = 8000; // this is the limit of the depth value and represents the furthest object (and closest at starting point)
+
   //UPDATE the DEPTH IMAGES FROM KINECT
   kinect.update();  //call the update function on the 'kinect' object.  why is this a function and not a method?
-  // the update funtion tells the SimpleOpenNI library to get fresh data from the Kinect so we can work with it.
-  // this fucntion will pull different data depending on which enable funcitons were pulled in setup.  
 
-  // rather than pass the return values of these kinect image-accessing funcitons directly to image functions, 
-  // we can store the return type in a local PImage variable, and then pass the entire PImage to the image functions.
-  PImage depthImage = kinect.depthImage();  // this makes the return type of the image-accessing function explicit
-  image(depthImage, 0, 0);  // the kinect.depth is already called; its return type is stored in a PImage which is passed to this image function
+  //get the depth array from the kinect
+  int []depthValues = kinect.depthMap();
+
+  //SCAN ALL PIXELS FROM 0 - 300,702.  If it's not closer than what we got, keep going, otherwise, replace current with new closest
+  //for each row in the depth image
+  for (int y=0; y<480; y++) { //for every one of these rows starting at the top and going down, look at every pixel along the way
+
+    //look at each pixel in the row
+    for (int x=0; x<640; x++) {  // all the way across to the end
+
+      //and pull out the corresponding value from the depth array
+      int i = x + (y*640);  //at each x,y coordinate, convert your location to the corresponding index in the depthMap array
+      int currentDepthValue = depthValues[i];  //reach into that array at that index and store that distance into the currentDepthValue var
+
+      //if the pixel is the closest one we've seen so far
+      if (currentDepthValue > 0 && currentDepthValue < closestValue) {  //if that currentDepthValue is closer than the one he have in hand (but not 0)
+        //then save its value as the new closestValue
+        closestValue = currentDepthValue;
+        //and and then save its x,y position
+        closestX = x;
+        closestY = y;
+      }
+    }
+  }
+
+//draw the depth image on the screen
+image (kinect.depthImage(), 0,0);
+
+//draw a red circle over it at the x,y location of the pixel with the closest depth value
+fill (255,0,0);
+color c = get(closestX, closestY);
+ellipse(closestX, closestY,  15, 15);
+
+
+  //PImage depthImage = kinect.depthImage();  // this makes the return type of the image-accessing function explicit vs image(kinect.depthImage(),0,0)
+  //image(depthImage, 0, 0);  // the kinect.depth is already called; its return type is stored in a PImage which is passed to this image function
 }
 
 // Get INFO for each pixel:  when mouse click on a pixel, print out information on that pixel
@@ -115,6 +138,6 @@ void mousePressed () {  // this function gets called everytime whenever mousePre
   float inches = millimeters/25.4; // if clickedDepth is 0-8000? how would / by 25.4 work?  1inch * 12 is a foot.  1 foot * 25 = range of kinect
   // 12inches * 25 feet = 400inches/25feet.  8000millimeters/25feet.  8000
 
-  println("millimeters: " + millimeters + " inches: " + inches); 
+  println("millimeters: " + millimeters + " inches: " + inches);
 }
 
