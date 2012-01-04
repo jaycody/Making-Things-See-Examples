@@ -1,6 +1,6 @@
 /* jason stephens  - 3 Jan 2012
  Making Things See - practice and examples
- This Branch = WirelessTapeMeasure
+ This Branch = TrackingNearestObject
  
  
  TODO:
@@ -8,10 +8,10 @@
  DONE____change the subtitle of this app here in comments with each branching
  DONE____Get INFO for each pixel:  when mouse click on a pixel, print out information on that pixel
  DONE____Translate a brightness(); value to a real world distance.  where brightness is the distance between white and black. 0-255 mapped to 0-2047
- ____access an array of higher resolution values from the kinect.
- ____Use higher resolution depthImage values to turn Kinect into tape measure by converting high res depth values to accurate measurements.
- ____Translate between a 1-D array of pixels and the 2-D image that it represents
- ____Access an entry in an array that corresponds to any location in an image
+ DONE____access an array of higher resolution values from the kinect.
+ DONE____Use higher resolution depthImage values to turn Kinect into tape measure by converting high res depth values to accurate measurements.
+ DONE____Translate between a 1-D array of pixels and the 2-D image that it represents
+ DONE____Access an entry in an array that corresponds to any location in an image
  ____uh oh, usb extension cord issues with the Kinect....  email greg bornestein:  awaiting response
  
  NOTES:
