@@ -4,9 +4,16 @@
  
  
  TODO:
- ____track the point closest to the kinect
- ____get depth array from the kinect
+ DONE____track the point closest to the kinect
+ DONE____get depth array from the kinect
+ ____ask about a pixels related info (location in image, location in depth array, hires depth value, depthImage greyscale
+ ____ask each pixel for related info and compare all pixel info to all other pixel info
+ ____answer questions about the entire depth image as a whole (eg Where, out of everywhere, is the closest? furthest? 
+ ____translate from code that runs on a series of individual points to information that holds up for all points in the image.
+ ____make transition from static single pixel analysis to conclusions about the entire single frame
+ ____make transition from conclusions about the entire single frame to information about frames in motion over time.  
  ____
+ 
  ____uh oh, usb extension cord issues with the Kinect....  email greg bornestein:  awaiting response
  
  NOTES:
@@ -69,6 +76,23 @@
  in depthImage() we use get(x,y) to return the pixel values at x,y then stored it as color c = get(mouseX,mouseY);
  with depthMap() we assoicate  the pixel x,y location with the corresponding location in the 1D array.  When mousePressed,
  calculate that pixels location in the array as mouseX +(mouseY*screen.width); // thus turning x,y cordinates into an index #
+ 
+ [From static analysis to conclusions about process] 
+ 1.Get info on a pixel.  2.Over time scan every pixel from a set of pixels that are presented all at once in parallel as an emergent image.
+ 3.Using information gathered by a serial process from a parallel emergent image, make a parallel conclusion about all static pixels 
+ within the emergent image. 1b Get info on an image. 2b.Over time, scan every parallel conclusions about all static pixels within a series
+of emergent images presented as an emergent video.  3b.Using information gathered by a serial process from a parallel emergent video,
+make a parallel conclusion about all static images within an emergent video.  1c. Gather info on videos.  .....
+it's like going serial scan over each static pixel to parallel simultaneous conclusion about the entirety of those static pixels
+then going from serial conclusions about several parallel conclusions from static-pixel-entireties 
+to a parellel conclusion of single frames over time  ENOUGH!
+
+Going from code running serial analysis of individual points to information regarding the emergent image, we need variables that store 
+information about the RELATIONSHIPS between individual points.  If they aren't moving, then we must move our point of analysis.
+What's the difference between moving through static environment and stasis in a moving environment.  Did I just happen upon the Liebniz 
+vs Newton debate on substantival space?  Spinning bucket ring any bells? For reals, philosophical seque = done.
+
+Variables to hold information about the RELATIONSHIPS between pixels
  */
 
 import SimpleOpenNI.*;  //importing the SimpleOpenNI library, which is a wrapper for the OpenNI toolkit provided by PrimeSense
@@ -105,9 +129,13 @@ void draw () {
       int i = x + (y*640);  //at each x,y coordinate, convert your location to the corresponding index in the depthMap array
       int currentDepthValue = depthValues[i];  //reach into that array at that index and store that distance into the currentDepthValue var
 
-      //if the pixel is the closest one we've seen so far
-      if (currentDepthValue > 0 && currentDepthValue < closestValue) {  //if that currentDepthValue is closer than the one he have in hand (but not 0)
-        //then save its value as the new closestValue
+      //if the current pixel is the closest one we've seen so far
+      if (currentDepthValue > 0 && currentDepthValue < closestValue) {  //Test for a nonZero currentDepthValue 
+        //that's closer than the closest value  depth value.  0 depth values happen at occlusions, in depth shadows where there's no data
+        // or if the point is closer than the minimum range of 20inches (450mill).  By testing for currentDepthValue greater than 0, 
+        //we use only points that have nonZero readings
+
+        //then save its value as the closestValue
         closestValue = currentDepthValue;
         //and and then save its x,y position
         closestX = x;
@@ -116,13 +144,13 @@ void draw () {
     }
   }
 
-//draw the depth image on the screen
-image (kinect.depthImage(), 0,0);
+  //draw the depth image on the screen
+  image (kinect.depthImage(), 0, 0);
 
-//draw a red circle over it at the x,y location of the pixel with the closest depth value
-fill (255,0,0);
-color c = get(closestX, closestY);
-ellipse(closestX, closestY,  15, 15);
+  //draw a red circle over it at the x,y location of the pixel with the closest depth value
+  fill (255, 0, 0);
+  color c = get(closestX, closestY);
+  ellipse(closestX, closestY, 15, 15);
 
 
   //PImage depthImage = kinect.depthImage();  // this makes the return type of the image-accessing function explicit vs image(kinect.depthImage(),0,0)
