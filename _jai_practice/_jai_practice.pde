@@ -1,6 +1,6 @@
 /* jason stephens  - 3 Jan 2012
  Making Things See - practice and examples
- This Branch = LookingAtPixels
+ This Branch = DepthPixels
  
  
  TODO:
