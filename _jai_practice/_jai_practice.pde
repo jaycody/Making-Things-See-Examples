@@ -12,7 +12,7 @@
  ____translate from code that runs on a series of individual points to information that holds up for all points in the image.
  ____make transition from static single pixel analysis to conclusions about the entire single frame
  ____make transition from conclusions about the entire single frame to information about frames in motion over time.  
- ____
+ ____How can I use variables to aggregate data from individual pixels into a more widely useful form?  SCOPE
  
  ____uh oh, usb extension cord issues with the Kinect....  email greg bornestein:  awaiting response
  
@@ -92,7 +92,78 @@ information about the RELATIONSHIPS between individual points.  If they aren't m
 What's the difference between moving through static environment and stasis in a moving environment.  Did I just happen upon the Liebniz 
 vs Newton debate on substantival space?  Spinning bucket ring any bells? For reals, philosophical seque = done.
 
-Variables to hold information about the RELATIONSHIPS between pixels
+Variables to hold information about the RELATIONSHIPS between pixels.  At the end of one sweep through all depth values presented at
+time t, variables are gathered, tested and acted on.  Cycle repeats with new set of static data points.  In closestValue, closestX, closestY,
+we store the information that we "build up" from processing each individual depth point. 
+
+SCOPE:  describes HOW LONG a variable sticks around.  The quality of "stick-aroundness" is what allows variables to aggregate data
+eg. does a variable stick around only inside a for loop (int i = 0.....???
+does the variable exist only in a single function? (a local variable)?
+is the variable initialized before setup, allowing it persist in the entire sketch as a global variable?
+In this sketch we have them all 3.  
+
+'THE DATA TUNNELS ITS WAY OUT FROM THE INNERMOST SCOPE WHERE IT RELATES ONLY TO SINGLE PIXELS TO THE OUTER SCOPE WHERE IT CONTAINS
+INFORMATION ABOUT THE ENTIRE DEPTH IMAGE, THE LOCATION AND DISTANCE OF ITS CLOSEST POINT.'  -g.borstein
+
+Consider the variables as existing on different plans of reality within the sketch where each plane of reality covers a different SCOPE.
+Once a variable is assigned, it stays set for all the realities inside the one in which it wsa originally assigned.
+One plane of reality is global, and is therefore available everywhere.  Variables defined outside of any function are omnipresent. 
+Variables defined within a lower plane only exist inside that lower plane of reality, and they DISAPPEAR whenever we leave that layer.
+Like jumping from one individual consciousness to another.  Collective consciousness exists in setup() and draw(), but individual consciousnesses
+must be REINHABITED everytime we re enter the plane on which that individual was created.  If we leave that plane, our awareness of what is means
+to be that individual consciousness is lost.  If we want to create a variable to store info about an individual consciousness, then we have to 
+declare that variable on the appropriate plane of reality.  We wouldn't want to try to aggregate relationships between individual consciousness
+with variables that build up values over multiple consciousness.  We have different variables for that.  We declare and initialize clean, new
+variables for use with each individual.  Other variables, created with larger scope, store info about the collective consciousness by aggregate 
+ info about the relationships of individuals.  
+ Look at the draw() in this sketch.  in the inner most sanctum, inside the double for-loop where the individual pixel lives, 2 variables
+ are declared.  One is specific to the pixels location, the other to the depthValue associated with that pixels location.  Once we leave the loop,
+ those variables are essentially erased.  However, they live on, because information gleaned from them are passed to variables that are
+ used inside the inner sanctum, but which were themselves declared and initilized on a higher plane of reality.  It's like a net that dips 
+ down into the water, the hand of God reaching down to provide a path to a higher level of consciousness.  Information passed into
+ higher planes of reality emerge from lower level processes as collective effervescence (or information about connections between
+individuals collectively experiencing a process), but the individuals and the lower level processes they experience remain on the level 
+within which they were orignially initialized.  the 'i' of the inner most scope, along with the currentDepthValue assoiciated with this inner 'i,'
+are declared inside the inner most scope precisely because they must reflect the individuality of each pixel.  It's not the 'i' which transcends,
+it's not even the 'i' with the winning depth value that transcends.  What transcends is the high water mark produced by a group of individuals 
+collectively experiencing a single process.  
+Some info we want to change at every draw, but we want to stay the same inside all for loops and functions inside draw().  These we create 
+as relatively global variables at the top of draw().  These are like the collective consciousnesses of a city.  Everyone in NYC has NYC
+inside of them, but NYC is not inside America.  This is why I moved here, to allow the collective intelligence of NYC to inhabit me by
+residing inside my particular layer of reality.  Only by existing inside the draw() loop do []depthValues exist.  At the end of the cycle,
+the depthValues must be born again with no memory of what they were in the previous iteration.  There's no information carried over into
+their next life.  Since we want to pull in a new frame from the kinect at every draw cycle, we want the variable holding the incoming information
+to be reset.  Hmmmm, interesting argument for death.  Imagine the issues of rejuvinations and memory crystals and potential immortality.  
+We'd have to create parts of ourselves that were erasable, but still connected to our higher SELF.  We'd have to partially renew ourselves,
+or better, renew our partial selves.  Without a clean break from information about the past, we could never experience an experience of having
+no previous experience.  Hence, some variables should get reset everytime the draw function restarts.  However, we do want some variables
+to persist for the duration of the draw cycle so that they may experience the full extent of all internal processes. The depthValues array, 
+for example, must exist for an entire cycle so that all the individuals there unto pretaining can be analyzed.  We wouldn't want to call
+an update from the kinect before the current array of pixels are scanned and relevant information saved.  
+As for variables in the highest plane of reality, the so called "global" variables to which the application has UNIVERSAL access at all times.
+What is the term to describe an entity that exists anywhere at all times?  Omnipresent?  No matter how many times the variables of the
+inner cycles die and are reborn, information gathered from their internal processes can live on.  This is how stable information of a dynamic
+system can persist in the face of constant novelty.  this is also how a single piece of information from a single individual can effect
+the overall outcome of the whole entity.  The individual pixel does not need to contain information about other pixels in order to contribute
+to conclusions about the emergent image.  Even though the inner loop only asks for the depth Value of the current pixel, it can constantly
+compare this depth with the closestValue, changing it if necessary.  A single pixel imbued with the qualities collected by higher order processes,
+can connect to the highest order behaviors achievable by the system.
+Color emerges from variations in brightness levels.  If r,g,and b are of equal brightness, the color is greyscale.  Complexity in software arises
+from variation in the SCOPES of its variables.
+
+One way to make a sketch more sophisticated is to take advantage of the global scope of variables.  closestX closestY get reset through every
+loop, as does closetValue.  They could have been created inside the top level of draw.  Having them top level global however, does reveal the 
+intentions of the application.  It also gives us the ability to access the their global scope.  Transition from resetting the global variables
+to updating the global variables.  Updating implies retaining information from the past.  Updating and retaining past info of closestX closestY
+would allow us to do things like smoothing by averaging location over time to iron out the abrupt transitions inherent in resetting the variables.
+
+Using the global scope of closestValue could give lead to information about the distance between where the closestValue was, and where 
+it is currently.  Kinect.depthImage(1) closestValue = closestValue1.  Variables then arrise to handle metadata about connections between connections
+Change persistance over time.  With this information, certain thresholds can be used as triggers.  Example, draw a line between the location of
+Previous closetValue and the location of currrent closestValue iff the distance between the two is greater than the square root of the distance 
+between the current close point and the kinect.  Or something like THAT.  Track my hand only if it moves MORE than a certain amount.
+If I move quickly, then distance is greater, then draw THIS, otherwise draw THAT.
+
  */
 
 import SimpleOpenNI.*;  //importing the SimpleOpenNI library, which is a wrapper for the OpenNI toolkit provided by PrimeSense
@@ -140,6 +211,7 @@ void draw () {
         //and and then save its x,y position
         closestX = x;
         closestY = y;
+        //what emerges after one analysis cycle of 300,000 individual pixels is 3 pieces of information about the group. 
       }
     }
   }
