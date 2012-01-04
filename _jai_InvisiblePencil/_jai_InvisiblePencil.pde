@@ -16,6 +16,7 @@
  _____mirror the screen so we're not backwards!  To convert the Kinect's image into a mirror image,  flip the order of the depth points on the x-axis
  _____what is Kid-nap-ed.  Well that's just like, uh, your opinion, man
  _____lerp()  Linear interpolation function?  calculates a number between two numbers at a specific increment
+ _____Mirror image of the depth data.  1. create reversedX, then calculate using new pixel cordinates convert to 1D array location.
  
  
  
