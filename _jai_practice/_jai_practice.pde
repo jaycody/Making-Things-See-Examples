@@ -35,7 +35,7 @@
  too few or too many images per loop.  Keeping Processing looping at same rate of Kinect framerate is ideal.  
  Cannot simply set frameRate in the sketch to (30), since we do not know the load placed on the app while running, especially if interactive.
  
- ->depthImage(); // the color of each pixel in the depth image represents the distance in that part of the scene (0-255) GREYSCALE;
+ ->depthImage(); // 640x480.  the color of each pixel in the depth image represents the distance in that part of the scene (0-255) GREYSCALE;
  r()g()b() extracted values from color variable passed by return from get() at mouseX mouseY reveals 3 equal values.  sine color is difference
  between rgb values, greyscale will always have 3 equal values.  BRIGHTNESS is the DISTANCE between white and black.
  But what of the pixels ACTUAL DEPTH?  How far away is a greyscale brightness() extracted value of 142 or 19?
@@ -65,8 +65,15 @@
  
  1-D Arrays of 2-D images; //  TRANSLATIONS!!  how do we figure out which pixel is clicked on (TRANSLATE from image to array)?  how do we draw something on the screen
  where we found a particular depth value (TRANSLATE from array to image)?  How do I convert between array in which pixel is stored and pixel's position
- 
- 
+ Notice that the first pixel of every line is always a multiple of the screen.width (or in this case, 640)
+ ->depthMap(); // a SimpleOpenNI function that provides access to higher resolution depth data unmodifed - neither converted nor processed values
+ What is the form of depth values returned by depthMap()?  Ans:  can't be stored as the pixels of image as with depthImage(); because 
+ higher res depth values can't be stored in the 8bits provided by a pixel.  
+ Ans:  depthMap() values are stored as an array of integers.  there is one high res depth value for each pixel in the depth image.
+ since depthImage() = 640x480, there are640x480 pixel locations, each represented in the depthMap() 1D array. 307,200 indexes in single linear stack
+ in depthImage() we use get(x,y) to return the pixel values at x,y then stored it as color c = get(mouseX,mouseY);
+ with depthMap() we assoicate  the pixel x,y location with the corresponding location in the 1D array.  When mousePressed,
+ calculate that pixels location in the array as mouseX +(mouseY*screen.width); // thus turning x,y cordinates into an index #
  */
 
 import SimpleOpenNI.*;  //importing the SimpleOpenNI library, which is a wrapper for the OpenNI toolkit provided by PrimeSense
@@ -80,12 +87,12 @@ void setup() {
 
   //TURN ON ACCESS DEPTH IMAGES FROM KINECT
   /* call the enableDepth() methods on our 'kinect' instance of the SimpleOpenNI object
- this method tells the library that we we are going to want access (in draw) to the kinect's depth.
+   this method tells the library that we we are going to want access (in draw) to the kinect's depth.
    Depending on the application, I may use 1 or neither of these.  By telling the library in advance, we give it extra time.  the library
    only has to ask the Kinect for the data we actually use.  Setup allows the request to be staged without being used unless it's 
    needed.  Everything runs smoother and faster this way.*/
   kinect.enableDepth(); // enableDepth() method using dot syntax to attach this function to the specific instance of the SimpleOpenNI object
- // kinect.enableRGB(); // disable the enableRGB() method. strictly depthImage now.
+  // kinect.enableRGB(); // disable the enableRGB() method. strictly depthImage now.
 }
 void draw () {
   //UPDATE the DEPTH IMAGES FROM KINECT
@@ -97,18 +104,17 @@ void draw () {
   // we can store the return type in a local PImage variable, and then pass the entire PImage to the image functions.
   PImage depthImage = kinect.depthImage();  // this makes the return type of the image-accessing function explicit
   image(depthImage, 0, 0);  // the kinect.depth is already called; its return type is stored in a PImage which is passed to this image function
- 
 }
 
 // Get INFO for each pixel:  when mouse click on a pixel, print out information on that pixel
 void mousePressed () {  // this function gets called everytime whenever mousePressed inside the running app
-int[] depthValues = kinect.depthMap(); //creat an array called depthValues from this instance of the kinect object's depthMap
-int clickPosition = mouseX + (mouseY*640); //the clicked pixel's position in the 1-D array is its mouseX value + the total value of mouseY*screen.width
-int clickedDepth = depthValues[clickPosition]; // go to clickPosition index on the 1-D array, get that value and store it in clickedDepth variable.
+  int[] depthValues = kinect.depthMap(); //creat an array called depthValues from this instance of the kinect object's depthMap
+  int clickPosition = mouseX + (mouseY*640); //the clicked pixel's position in the 1-D array is its mouseX value + the total value of mouseY*screen.width
+  int millimeters = depthValues[clickPosition]; // reach into index # "clickPosition" on the 1-D array, get that value, and store it in clickedDepth variable.
 
-float inches = clickedDepth/25.4; // if clickedDepth is 0-8000? how would / by 25.4 work?  1inch * 12 is a foot.  1 foot * 25 = range of kinect
-// 12inches * 25 feet = 400inches/25feet.  8000millimeters/25feet.  8000
+  float inches = millimeters/25.4; // if clickedDepth is 0-8000? how would / by 25.4 work?  1inch * 12 is a foot.  1 foot * 25 = range of kinect
+  // 12inches * 25 feet = 400inches/25feet.  8000millimeters/25feet.  8000
 
-println("inches: " + inches);
+  println("millimeters: " + millimeters + " inches: " + inches); 
 }
- 
+
