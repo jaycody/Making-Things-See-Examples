@@ -6,13 +6,13 @@
  TODO:
  DONE____track the point closest to the kinect
  DONE____get depth array from the kinect
- ____ask about a pixels related info (location in image, location in depth array, hires depth value, depthImage greyscale
- ____ask each pixel for related info and compare all pixel info to all other pixel info
- ____answer questions about the entire depth image as a whole (eg Where, out of everywhere, is the closest? furthest? 
- ____translate from code that runs on a series of individual points to information that holds up for all points in the image.
- ____make transition from static single pixel analysis to conclusions about the entire single frame
- ____make transition from conclusions about the entire single frame to information about frames in motion over time.  
- ____How can I use variables to aggregate data from individual pixels into a more widely useful form?  SCOPE
+ DONE____ask about a pixels related info (location in image, location in depth array, hires depth value, depthImage greyscale
+ DONE____ask each pixel for related info and compare all pixel info to all other pixel info
+ DONE____answer questions about the entire depth image as a whole (eg Where, out of everywhere, is the closest? furthest? 
+ DONE____translate from code that runs on a series of individual points to information that holds up for all points in the image.
+ DONE____make transition from static single pixel analysis to conclusions about the entire single frame
+ DONE____make transition from conclusions about the entire single frame to information about frames in motion over time.  
+ DONE____How can I use variables to aggregate data from individual pixels into a more widely useful form?  SCOPE
  
  ____uh oh, usb extension cord issues with the Kinect....  email greg bornestein:  awaiting response
  
